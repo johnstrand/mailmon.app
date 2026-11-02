@@ -1,27 +1,31 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 
 interface Props {
-  folders: string[];
-  excludedFolders: Set<string>;
-  onToggleFolder: (folder: string) => void;
+  folders: string[]
+  excludedFolders: Set<string>
+  onToggleFolder: (folder: string) => void
 }
 
-export function FolderFilter({ folders, excludedFolders, onToggleFolder }: Props) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+export function FolderFilter({
+  folders,
+  excludedFolders,
+  onToggleFolder
+}: Props): React.JSX.Element {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   // Close on outside click
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
+    function handleClick(e: MouseEvent): void {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
+        setOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
-  const hiddenCount = excludedFolders.size;
+  const hiddenCount = excludedFolders.size
 
   return (
     <div ref={ref} className="relative">
@@ -34,10 +38,23 @@ export function FolderFilter({ folders, excludedFolders, onToggleFolder }: Props
         }`}
         title={`${folders.length - hiddenCount} of ${folders.length} folders visible`}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-3.5 h-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"
+          />
         </svg>
-        <span className="font-mono">{folders.length - hiddenCount}/{folders.length}</span>
+        <span className="font-mono">
+          {folders.length - hiddenCount}/{folders.length}
+        </span>
       </button>
 
       {open && folders.length > 0 && (
@@ -46,7 +63,7 @@ export function FolderFilter({ folders, excludedFolders, onToggleFolder }: Props
             Show folders
           </div>
           {folders.map((folder) => {
-            const visible = !excludedFolders.has(folder);
+            const visible = !excludedFolders.has(folder)
             return (
               <label
                 key={folder}
@@ -60,10 +77,10 @@ export function FolderFilter({ folders, excludedFolders, onToggleFolder }: Props
                 />
                 <span className="truncate">{folder}</span>
               </label>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
+  )
 }

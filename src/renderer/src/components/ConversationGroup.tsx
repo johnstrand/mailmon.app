@@ -1,18 +1,18 @@
-import React, { useRef } from 'react';
-import type { MailMessage } from '../types/mail';
-import { MailListItem } from './MailListItem';
+import React, { useRef } from 'react'
+import type { MailMessage } from '../types/mail'
+import { MailListItem } from './MailListItem'
 
 interface Props {
-  messages: MailMessage[];
-  isExpanded: boolean;
-  onToggleExpand: () => void;
-  selectedId: string | null;
-  checkedIds: Set<string>;
-  markingIds: Set<string>;
-  onSelect: (id: string) => void;
-  onToggleCheck: (id: string) => void;
-  onMarkRead: (id: string) => void;
-  onMarkConversationRead: (ids: string[]) => void;
+  messages: MailMessage[]
+  isExpanded: boolean
+  onToggleExpand: () => void
+  selectedId: string | null
+  checkedIds: Set<string>
+  markingIds: Set<string>
+  onSelect: (id: string) => void
+  onToggleCheck: (id: string) => void
+  onMarkRead: (id: string) => void
+  onMarkConversationRead: (ids: string[]) => void
 }
 
 export function ConversationGroup({
@@ -25,48 +25,52 @@ export function ConversationGroup({
   onSelect,
   onToggleCheck,
   onMarkRead,
-  onMarkConversationRead,
-}: Props) {
+  onMarkConversationRead
+}: Props): React.JSX.Element {
   const sorted = [...messages].sort(
-    (a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime(),
-  );
-  const latest = sorted[0];
-  const ids = messages.map((m) => m.id);
-  const isMulti = messages.length > 1;
+    (a, b) => new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime()
+  )
+  const latest = sorted[0]
+  const ids = messages.map((m) => m.id)
+  const isMulti = messages.length > 1
 
-  const checkedCount = ids.filter((id) => checkedIds.has(id)).length;
-  const isAllChecked = checkedCount === ids.length;
-  const isSomeChecked = checkedCount > 0 && !isAllChecked;
-  const isAnySelected = ids.includes(selectedId ?? '');
+  const checkedCount = ids.filter((id) => checkedIds.has(id)).length
+  const isAllChecked = checkedCount === ids.length
+  const isSomeChecked = checkedCount > 0 && !isAllChecked
+  const isAnySelected = ids.includes(selectedId ?? '')
 
-  const folderNames = [...new Set(messages.map((m) => m.folderName))].join(', ');
+  const folderNames = [...new Set(messages.map((m) => m.folderName))].join(', ')
 
-  const checkboxRef = useRef<HTMLInputElement>(null);
+  const checkboxRef = useRef<HTMLInputElement>(null)
   // Set indeterminate imperatively
   React.useEffect(() => {
-    if (checkboxRef.current) checkboxRef.current.indeterminate = isSomeChecked;
-  }, [isSomeChecked]);
+    if (checkboxRef.current) checkboxRef.current.indeterminate = isSomeChecked
+  }, [isSomeChecked])
 
-  const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
+  const handleToggleAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    e.stopPropagation()
     if (isAllChecked) {
-      ids.forEach((id) => { if (checkedIds.has(id)) onToggleCheck(id); });
+      ids.forEach((id) => {
+        if (checkedIds.has(id)) onToggleCheck(id)
+      })
     } else {
-      ids.forEach((id) => { if (!checkedIds.has(id)) onToggleCheck(id); });
+      ids.forEach((id) => {
+        if (!checkedIds.has(id)) onToggleCheck(id)
+      })
     }
-  };
+  }
 
-  const handleHeaderClick = () => {
-    if (isMulti) onToggleExpand();
-    else onSelect(ids[0]);
-  };
+  const handleHeaderClick = (): void => {
+    if (isMulti) onToggleExpand()
+    else onSelect(ids[0])
+  }
 
-  const handleMarkConversationRead = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onMarkConversationRead(ids);
-  };
+  const handleMarkConversationRead = (e: React.MouseEvent): void => {
+    e.stopPropagation()
+    onMarkConversationRead(ids)
+  }
 
-  const isSelected = !isMulti && isAnySelected;
+  const isSelected = !isMulti && isAnySelected
 
   return (
     <div className={`border-b border-gray-200 ${isSelected ? 'border-l-4 border-l-blue-500' : ''}`}>
@@ -127,7 +131,7 @@ export function ConversationGroup({
 
         {/* Hover mark-all-read button */}
         {(() => {
-          const isAnyMarking = ids.some((id) => markingIds.has(id));
+          const isAnyMarking = ids.some((id) => markingIds.has(id))
           return (
             <button
               onClick={handleMarkConversationRead}
@@ -136,16 +140,36 @@ export function ConversationGroup({
               className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-gray-300 rounded-full p-1 hover:bg-green-50 hover:border-green-400 shadow-sm disabled:opacity-60"
             >
               {isAnyMarking ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5 text-gray-400 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5 text-green-600"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               )}
             </button>
-          );
+          )
         })()}
       </div>
 
@@ -167,5 +191,5 @@ export function ConversationGroup({
         </div>
       )}
     </div>
-  );
+  )
 }

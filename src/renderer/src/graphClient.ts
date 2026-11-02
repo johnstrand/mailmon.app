@@ -1,19 +1,19 @@
-import { Client } from '@microsoft/microsoft-graph-client';
+import { Client, type AuthenticationProvider } from '@microsoft/microsoft-graph-client'
 
-function createAuthProvider() {
+function createAuthProvider(): AuthenticationProvider {
   return {
     getAccessToken: async (): Promise<string> => {
-      return window.electronAuth.getAccessToken();
-    },
-  };
+      return window.electronAuth.getAccessToken()
+    }
+  }
 }
 
 export function getGraphClient(): Client {
   return Client.initWithMiddleware({
-    authProvider: createAuthProvider(),
-  });
+    authProvider: createAuthProvider()
+  })
 }
 
 export async function getAccessToken(): Promise<string> {
-  return window.electronAuth.getAccessToken();
+  return window.electronAuth.getAccessToken()
 }

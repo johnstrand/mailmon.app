@@ -1,15 +1,15 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 
 export interface ElectronAuthAccount {
-  username: string;
-  name: string;
+  username: string
+  name: string
 }
 
 export interface ElectronAuth {
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-  getAccessToken: () => Promise<string>;
-  getAccount: () => Promise<ElectronAuthAccount | null>;
+  login: () => Promise<void>
+  logout: () => Promise<void>
+  getAccessToken: () => Promise<string>
+  getAccount: () => Promise<ElectronAuthAccount | null>
 }
 
 declare global {

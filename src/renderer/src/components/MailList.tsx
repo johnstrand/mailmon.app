@@ -1,13 +1,13 @@
-import type { MailMessage } from '../types/mail';
-import { MailListItem } from './MailListItem';
+import type { MailMessage } from '../types/mail'
+import { MailListItem } from './MailListItem'
 
 interface Props {
-  messages: MailMessage[];
-  selectedId: string | null;
-  checkedIds: Set<string>;
-  onSelect: (id: string) => void;
-  onToggleCheck: (id: string) => void;
-  onMarkRead: (id: string) => void;
+  messages: MailMessage[]
+  selectedId: string | null
+  checkedIds: Set<string>
+  onSelect: (id: string) => void
+  onToggleCheck: (id: string) => void
+  onMarkRead: (id: string) => void
 }
 
 export function MailList({
@@ -16,14 +16,14 @@ export function MailList({
   checkedIds,
   onSelect,
   onToggleCheck,
-  onMarkRead,
-}: Props) {
+  onMarkRead
+}: Props): React.JSX.Element {
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
         No unread messages
       </div>
-    );
+    )
   }
 
   return (
@@ -41,5 +41,5 @@ export function MailList({
         />
       ))}
     </div>
-  );
+  )
 }

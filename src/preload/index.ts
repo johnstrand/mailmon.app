@@ -6,7 +6,7 @@ const electronAuth = {
   logout: (): Promise<void> => ipcRenderer.invoke('auth:logout'),
   getAccessToken: (): Promise<string> => ipcRenderer.invoke('auth:get-access-token'),
   getAccount: (): Promise<{ username: string; name: string } | null> =>
-    ipcRenderer.invoke('auth:get-account'),
+    ipcRenderer.invoke('auth:get-account')
 }
 
 if (process.contextIsolated) {

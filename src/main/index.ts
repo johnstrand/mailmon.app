@@ -2,11 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import {
-  PublicClientApplication,
-  CryptoProvider,
-  LogLevel,
-} from '@azure/msal-node'
+import { PublicClientApplication, CryptoProvider, LogLevel } from '@azure/msal-node'
 import type { AccountInfo, AuthorizationCodeRequest } from '@azure/msal-node'
 
 // ─── MSAL config ────────────────────────────────────────────────────────────
@@ -19,15 +15,15 @@ const REDIRECT_URI = 'http://localhost'
 const msalClient = new PublicClientApplication({
   auth: {
     clientId: CLIENT_ID,
-    authority: AUTHORITY,
+    authority: AUTHORITY
   },
   system: {
     loggerOptions: {
       loggerCallback: () => {},
       piiLoggingEnabled: false,
-      logLevel: LogLevel.Warning,
-    },
-  },
+      logLevel: LogLevel.Warning
+    }
+  }
 })
 
 const cryptoProvider = new CryptoProvider()
@@ -49,7 +45,7 @@ async function interactiveLogin(): Promise<void> {
     redirectUri: REDIRECT_URI,
     codeChallenge: challenge,
     codeChallengeMethod: 'S256',
-    nonce,
+    nonce
   })
 
   await new Promise<void>((resolve, reject) => {
@@ -58,12 +54,12 @@ async function interactiveLogin(): Promise<void> {
       height: 680,
       show: true,
       autoHideMenuBar: true,
-      webPreferences: { nodeIntegration: false, contextIsolation: true },
+      webPreferences: { nodeIntegration: false, contextIsolation: true }
     })
 
     let handled = false
 
-    const handleAuthRedirect = async (url: string) => {
+    const handleAuthRedirect = async (url: string): Promise<void> => {
       if (handled) return
       if (!url.startsWith(REDIRECT_URI)) return
       handled = true
@@ -80,7 +76,7 @@ async function interactiveLogin(): Promise<void> {
           code,
           scopes: SCOPES,
           redirectUri: REDIRECT_URI,
-          codeVerifier: verifier,
+          codeVerifier: verifier
         }
         await msalClient.acquireTokenByCode(tokenRequest)
         resolve()
@@ -118,7 +114,7 @@ async function getAccessToken(): Promise<string> {
 
   const result = await msalClient.acquireTokenSilent({
     scopes: SCOPES,
-    account,
+    account
   })
   return result.accessToken
 }
@@ -157,8 +153,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-    },
+      sandbox: false
+    }
   })
 
   mainWindow.on('ready-to-show', () => {

@@ -1,31 +1,49 @@
-import { useState, useEffect } from 'react';
-import { getGraphClient } from '../graphClient';
-import { useAuth } from './useAuth';
+import { useState, useEffect } from 'react'
+import { getGraphClient } from '../graphClient'
+import { useAuth, type AuthAccount } from './useAuth'
 
 export interface TodoList {
-  id: string;
-  displayName: string;
+  id: string
+  displayName: string
 }
 
-export function useTodoLists() {
-  const { isAuthenticated } = useAuth();
+interface TodoListsResult {
+  lists: TodoList[]
+  error: string | null
+}
 
-  const [lists, setLists] = useState<TodoList[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function useTodoLists(): TodoListsResult & { loading: boolean } {
+  const { account } = useAuth()
+  const [result, setResult] = useState<(TodoListsResult & { account: AuthAccount }) | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-    setLoading(true);
-    setError(null);
-    const client = getGraphClient();
+    if (!account) return
+    let active = true
+    const client = getGraphClient()
     client
       .api('/me/todo/lists')
       .get()
-      .then((res) => setLists(res.value ?? []))
-      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load lists'))
-      .finally(() => setLoading(false));
-  }, [isAuthenticated]);
+      .then((res) => {
+        if (active) setResult({ account, lists: res.value ?? [], error: null })
+      })
+      .catch((err) => {
+        if (active) {
+          setResult({
+            account,
+            lists: [],
+            error: err instanceof Error ? err.message : 'Failed to load lists'
+          })
+        }
+      })
+    return () => {
+      active = false
+    }
+  }, [account])
 
-  return { lists, loading, error };
+  const current = account && result?.account === account ? result : null
+  return {
+    lists: current?.lists ?? [],
+    loading: account !== null && current === null,
+    error: current?.error ?? null
+  }
 }
