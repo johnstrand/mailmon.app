@@ -21,7 +21,7 @@
     "build:linux": "electron-vite build && electron-builder --linux"
   },
   "dependencies": {
-    "@azure/msal-node": "^5.0.6",
+    "@azure/msal-node": "^7.1.0",
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@microsoft/microsoft-graph-client": "^3.0.7",
